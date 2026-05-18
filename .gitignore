@@ -1,0 +1,21 @@
+.env
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Generated outputs and local memory
+data/outputs/
+data/chroma/
+data/chroma_db/
+
+# Local backups and temporary files
+backups/
+tmp/
+*.log
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
