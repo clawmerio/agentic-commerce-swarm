@@ -6,9 +6,9 @@
 
 ## Overview
 
-**Agentic Commerce Swarm** is a curated portfolio version of a commercial automation prototype. It explores how specialized AI agent roles can transform a high-level business request into a structured campaign and website-improvement proposal while preserving reviewability, role separation and safety constraints.
+**Agentic Commerce Swarm** is a curated portfolio version of a commercial automation prototype originally developed from a LangGraph-oriented multi-agent workflow. It explores how specialized AI agent roles can transform a high-level business request into a structured campaign and website-improvement proposal while preserving reviewability, role separation and safety constraints.
 
-The current public version is intentionally conservative: it generates proposals and review artifacts. It does **not** autonomously modify production websites, publish campaigns, spend ad budget or operate real customer accounts.
+The current public version is intentionally conservative and sanitized: it generates proposals and review artifacts. It does **not** autonomously modify production websites, publish campaigns, spend ad budget or operate real customer accounts.
 
 Instead of using a single chatbot to generate generic content, Agentic Commerce Swarm uses a staged pipeline of specialized roles:
 
@@ -60,7 +60,8 @@ This repository should be treated as a **functional prototype / experimental wor
 
 | Area | Status |
 |---|---|
-| Staged multi-agent role pipeline | Implemented |
+| Original LangGraph-based multi-agent prototype | Implemented/tested in the project lineage before public sanitization |
+| Public staged multi-agent role pipeline | Implemented |
 | Interactive CLI workflow | Implemented |
 | LLM-backed role execution | Implemented |
 | Persistent memory with ChromaDB | Implemented with graceful fallback |
@@ -77,9 +78,11 @@ This repository should be treated as a **functional prototype / experimental wor
 | Daemon/background mode | Roadmap |
 | Production deployment | Not included |
 
-### Important implementation note
+### Implementation note
 
-The public repository currently uses a straightforward staged Python runner in `main.py`. `LangGraph` remains in the dependency set because the project lineage and intended evolution are graph-oriented, but this curated public version does not yet expose a full LangGraph state graph implementation.
+The original/private project lineage included LangGraph-based multi-agent orchestration. This public repository is a curated and sanitized portfolio version: it preserves the agent roles, staged handoff model, memory layer, safety review and HITL workflow, while currently exposing a simplified staged Python runner in `main.py` instead of the full original LangGraph graph implementation.
+
+This distinction is intentional: the public version prioritizes safety, clarity and portfolio reviewability without exposing private business data, local paths or raw internal artifacts.
 
 ---
 
@@ -138,13 +141,13 @@ Future memory categories may include:
 ## Tech stack
 
 - Python
+- LangGraph in the original multi-agent orchestration lineage
 - LangChain
 - OpenAI-compatible chat models through `langchain-openai`
 - ChromaDB for local memory persistence
 - python-dotenv
 - Rich CLI utilities
 - pytest for smoke validation
-- LangGraph as planned orchestration evolution
 
 See [`requirements.txt`](requirements.txt) and [`requirements-dev.txt`](requirements-dev.txt) for dependencies.
 
@@ -154,7 +157,7 @@ See [`requirements.txt`](requirements.txt) and [`requirements-dev.txt`](requirem
 
 ```text
 .
-├── main.py                     # Main staged orchestrator
+├── main.py                     # Main staged orchestrator for the public sanitized version
 ├── squad.py                    # Interactive CLI entrypoint
 ├── memory.py                   # ChromaDB memory layer
 ├── requirements.txt            # Runtime dependencies
@@ -275,6 +278,7 @@ This repo is useful as a portfolio case for:
 - AI automation engineering;
 - multi-agent orchestration patterns;
 - commercial automation prototypes;
+- LangGraph-oriented agent workflow design;
 - LLM memory systems;
 - human-in-the-loop workflows;
 - AI-assisted website optimization;
@@ -292,7 +296,7 @@ This repo is not:
 - an autonomous ad-spending agent;
 - a real customer case study;
 - a guarantee of conversion uplift;
-- a fully implemented LangGraph workflow yet;
+- a full public mirror of the original/private LangGraph implementation;
 - a system that should be pointed at production assets without review.
 
 ---
@@ -300,11 +304,11 @@ This repo is not:
 ## Curriculum positioning
 
 **Project title:** Agentic Commerce Swarm  
-**Short description:** Experimental multi-agent commercial orchestration workbench combining specialized LLM roles, persistent memory, sanitizer checks, QA review and human-in-the-loop approval for marketing/CRO proposals.
+**Short description:** Curated multi-agent commercial orchestration workbench evolved from a LangGraph-oriented prototype, combining specialized LLM roles, persistent memory, sanitizer checks, QA review and human-in-the-loop approval for marketing/CRO proposals.
 
 Example resume bullet:
 
-> Built a Python-based multi-agent workbench for commercial automation, combining specialized LLM roles, persistent ChromaDB memory, safety review, QA scoring and human-in-the-loop approval before website-change proposals.
+> Built and curated a multi-agent commercial automation workbench evolved from a LangGraph-oriented prototype, combining specialized LLM roles, persistent ChromaDB memory, safety review, QA scoring and human-in-the-loop approval before website-change proposals.
 
 ---
 
