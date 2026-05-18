@@ -1,0 +1,16 @@
+# Core frameworks
+langchain
+langgraph
+langchain-community
+langchain-openai
+langchain-google-genai
+
+# Utilities
+python-dotenv
+rich
+
+# Vector database for memory
+chromadb
+
+# Search
+duckduckgo-search
