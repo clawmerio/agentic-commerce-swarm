@@ -1,83 +1,108 @@
 # Architecture
 
-Agentic Commerce Swarm is organized as a staged multi-agent pipeline.
+Agentic Commerce Swarm is organized as a staged LLM workflow. The current public implementation is intentionally simple: `main.py` executes role methods in sequence and saves a reviewable artifact.
 
-## Pipeline
+## Current Public Runtime
 
 ```text
-User Request
-↓
-Squad Lead
-↓
-Diagnostician
-↓
-Strategist
-↓
-Copywriter
-↓
-Sanitizer
-↓
-Analyst
-↓
-Designer
-↓
-WebDev
-↓
-QA Auditor
-↓
-Human Review
+User request
+  |
+  v
+AgenticCommerceSwarm.run()
+  |
+  +-- squad_lead()
+  +-- diagnostician()
+  +-- strategist()
+  +-- copywriter()
+  +-- sanitizer()
+  +-- analyst()
+  +-- designer()
+  +-- webdev()
+  +-- qa_auditor()
+  |
+  +-- save Markdown artifact
+  +-- save memory summary when ChromaDB is available
+  v
+Human review
 ```
+
+This is not a public LangGraph implementation. The private/original lineage was LangGraph-oriented, and `langgraph` remains in the dependency list, but the current public code does not construct or execute a `StateGraph`.
 
 ## Components
 
-| Component | File | Role |
+| Component | File | Responsibility |
 |---|---|---|
-| Orchestrator | `main.py` | Runs the staged agent pipeline |
-| CLI | `squad.py` | Provides an interactive local entrypoint |
-| Memory | `memory.py` | Stores and retrieves past run context |
-| Docs | `docs/` | Explains architecture, workflow, safety and roadmap |
-| Examples | `examples/` | Holds sanitized demo artifacts |
+| Workflow runner | `main.py` | Owns state object, role prompts, LLM calls, artifact save, memory save. |
+| CLI | `squad.py` | Provides the interactive local entrypoint. |
+| Memory | `memory.py` | Stores/searches run summaries in ChromaDB when available. |
+| Demo site | `examples/demo-site/index.html` | Fictional website context for diagnosis and proposals. |
+| Sanitized run | `examples/sanitized-runs/demo_run.md` | Public-safe example of expected output shape. |
+| Tests | `tests/` | Lightweight smoke and parser validation. |
 
-## Agent contracts
+## Agent Responsibilities
 
-Each agent has a bounded responsibility.
+| Stage | Responsibility | Boundary |
+|---|---|---|
+| Squad Lead | Convert the request into a conservative internal brief. | Does not invent business facts. |
+| Diagnostician | Review the brief and demo-site context. | Does not write final copy. |
+| Strategist | Define audience, angle, CTA logic, and constraints. | Uses only supported context. |
+| Copywriter | Produce campaign and website copy. | Avoids fake metrics and guarantees. |
+| Sanitizer | Check copy for unsafe or unsupported claims. | Flags risk before downstream stages. |
+| Analyst | Score output and explain revision needs. | Current loop enforcement is limited. |
+| Designer | Provide layout and visual guidance. | Must not invent copy. |
+| WebDev | Map copy/design into reviewable website-change proposals. | Does not modify production files. |
+| QA Auditor | Challenge the full pipeline before human review. | Produces final risk notes. |
 
-- The Squad Lead preserves user intent.
-- The Diagnostician reviews evidence before strategy.
-- The Strategist chooses a conversion direction.
-- The Copywriter owns customer-facing text.
-- The Sanitizer checks unsafe or unsupported content.
-- The Analyst scores quality.
-- The Designer provides visual guidance only.
-- The WebDev maps approved copy into implementation proposals.
-- The QA Auditor challenges the full output before human review.
+## State Model
 
-## Memory model
-
-The memory layer is intentionally simple in the public version. It stores run summaries in ChromaDB when available and fails gracefully if local persistence is not configured.
-
-Future versions can split memory into dedicated collections:
-
-- campaigns;
-- rejected outputs;
-- strategies;
-- website proposals;
-- QA findings.
-
-## Safety boundary
-
-The system should generate proposals, not silently modify production assets.
-
-Preferred flow:
+`SwarmState` is a dataclass that carries the request and each stage output:
 
 ```text
-Generate proposal
-↓
-Save artifact
-↓
-QA review
-↓
-Human approval
-↓
-Intentional apply/deploy
+task
+squad_brief
+diagnosis
+strategy
+final_copy
+sanitizer_report
+analyst_report
+design_brief
+webdev_proposal
+qa_report
+quality_score
+approved_for_human_review
 ```
+
+The workflow is easy to inspect because each stage writes to a named field rather than mutating an opaque conversation.
+
+## Memory Model
+
+`SwarmMemory` uses ChromaDB persistence when local setup supports it:
+
+```text
+task + strategy + final_copy + qa_report + quality_score
+  -> ChromaDB collection: agentic_commerce_runs
+```
+
+If ChromaDB cannot initialize or query, the memory layer returns safely without blocking the workflow.
+
+## Safety Boundary
+
+The public architecture is proposal-first:
+
+```text
+generate proposal
+  -> save artifact
+  -> QA review
+  -> human review
+  -> manual implementation or controlled apply outside this repo
+```
+
+No code in the current public repository should be described as silently applying production website changes.
+
+## Current Limitations
+
+- Full pipeline tests are not present because live LLM calls require external credentials.
+- The analyst score parser depends on model output format.
+- Revision loops are architected but not strongly enforced in the public runner.
+- LangGraph is not used in the public runtime.
+- No deterministic patch/apply layer is included.

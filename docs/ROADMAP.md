@@ -1,78 +1,42 @@
 # Roadmap
 
-This roadmap separates what is already implemented, what is partially implemented and what should be treated as future work.
+This roadmap separates credibility fixes, engineering maturity, and deeper product evolution. The current public repo is a staged prototype, not production automation.
 
-## Implemented in this curated repo
+## Next 30 Minutes
 
-| Area | Notes |
-|---|---|
-| Multi-agent orchestration | Public-safe staged pipeline in `main.py` |
-| CLI entrypoint | Interactive workflow in `squad.py` |
-| Persistent memory | ChromaDB-backed memory layer with graceful fallback |
-| Output artifact generation | Runs saved as Markdown artifacts |
-| Human-in-the-loop concept | Workflow centered on review before changes |
-| Safety/compliance role | Sanitizer included as pipeline role |
-| QA role | QA Auditor included as final challenge layer |
-| Security policy | `docs/SECURITY.md` |
-| Handoff model | `docs/HANDOFF_MODEL.md` |
+- Keep README and status language aligned with the public sequential runner.
+- Add explicit reviewer path and test command.
+- Keep public examples fictional and sanitized.
+- Avoid describing LangGraph as implemented in public code until a graph exists.
 
-## Partially implemented
+## Next 2 Hours
 
-| Area | Gap |
-|---|---|
-| Rubric-based evaluation | Needs structured rubric files and integration |
-| Deterministic apply flow | Currently proposal-only in public version |
-| Memory quality loop | Memory stores runs, but promotion rules need refinement |
-| Tests | Smoke tests should be added |
-| Demo site analysis | Demo site exists but can be expanded |
+- Add tests around role boundary helpers and score parsing edge cases.
+- Add a fixture-based demo run that does not call an external LLM.
+- Add a small architecture diagram to the README or docs.
+- Add a `docs/PORTFOLIO.md` page with accurate GitHub, resume, and LinkedIn wording.
+- Clarify why `langgraph` is still in dependencies, or remove it if the public runner stays sequential.
 
-## Not included in this curated version
+## 1 To 2 Day Improvements
 
-- private business data;
-- raw campaign outputs;
-- local machine paths;
-- real customer/contact data;
-- visual Kanban UI;
-- daemon mode;
-- production deployment scripts.
+- Restore a real public LangGraph `StateGraph` implementation, with tests, if graph orchestration is a portfolio goal.
+- Add mock LLM clients for deterministic full-pipeline tests.
+- Add structured run metadata: model, timestamp, score, artifact path, safety decision.
+- Add stricter revision-loop enforcement when sanitizer or analyst output fails.
+- Add deterministic proposal-to-patch tooling for demo-site changes, with human approval.
 
-## P0 — Portfolio readiness
+## Later
 
-- Add safe demo run artifacts.
-- Add smoke tests.
-- Add one architecture diagram.
-- Add screenshots only if sanitized.
+- Browser-based review UI or Kanban handoff board.
+- Provider fallback and cost/token tracking.
+- Evaluation rubrics stored as versioned config.
+- Dashboard for run history and QA results.
+- Deployment guide for a controlled internal workbench.
 
-## P1 — Engineering maturity
+## Non-Goals For This Public Repo
 
-- Add typed configuration.
-- Add test fixtures.
-- Add role-separation regression tests.
-- Add cost/token logging.
-- Add structured run metadata.
-
-## P2 — Product evolution
-
-- Add visual Kanban handoff UI.
-- Add daemon/background mode.
-- Add web dashboard.
-- Add provider fallback.
-- Add deployment guide.
-
-## Long-term vision
-
-```text
-Business request
-↓
-Agentic diagnosis
-↓
-Strategy and content generation
-↓
-Safety and QA
-↓
-Human approval
-↓
-Versioned execution
-↓
-Measurement and memory feedback
-```
+- Running real customer campaigns.
+- Editing production websites automatically.
+- Claiming conversion uplift without measurement.
+- Publishing private business data or transcripts.
+- Calling the public code production-ready before tests, evals, and deployment guardrails exist.

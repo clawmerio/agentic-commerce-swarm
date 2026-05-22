@@ -1,79 +1,55 @@
 # Handoff Model
 
-This document describes the logical handoff model used by Agentic Commerce Swarm.
+This document describes the logical handoff model used by the current public prototype. There is no bundled Kanban UI or background daemon in this repository.
 
-A visual Kanban handoff UI is a roadmap item. The current public version focuses on the logical agent handoff.
-
-## Current logical handoff
+## Current Logical Handoff
 
 ```text
 User
-↓
-Squad Lead
-↓
-Diagnostician
-↓
-Strategist
-↓
-Copywriter
-↓
-Sanitizer
-↓
-Analyst
-↓
-Designer
-↓
-WebDev
-↓
-QA Auditor
-↓
-Human Review
+  -> Squad Lead
+  -> Diagnostician
+  -> Strategist
+  -> Copywriter
+  -> Sanitizer
+  -> Analyst
+  -> Designer
+  -> WebDev
+  -> QA Auditor
+  -> Human Review
 ```
 
-## Agent contracts
+## Agent Contracts
 
 | From | To | Artifact passed | Main constraint |
 |---|---|---|---|
-| User | Squad Lead | Raw request | Preserve intent |
-| Squad Lead | Diagnostician | Internal brief | Do not invent context |
-| Diagnostician | Strategist | Evidence-based diagnosis | Strategy must follow evidence |
-| Strategist | Copywriter | Strategic direction | Copy must match approved strategy |
-| Copywriter | Sanitizer | Draft copy | Reject unsafe or non-compliant content |
-| Sanitizer | Analyst | Sanitized copy | Score quality and force revisions when needed |
-| Analyst | Designer | Approved copy + quality notes | Designer must not invent copy |
-| Designer | WebDev | Visual/layout brief | WebDev must use approved copy only |
-| WebDev | QA Auditor | Website-change proposal | Must be reviewable |
-| QA Auditor | Human | Final report | Challenge claims before approval |
+| User | Squad Lead | Raw request | Preserve intent. |
+| Squad Lead | Diagnostician | Internal brief | Do not invent context. |
+| Diagnostician | Strategist | Evidence-based diagnosis | Strategy must follow evidence. |
+| Strategist | Copywriter | Strategic direction | Copy must match approved strategy. |
+| Copywriter | Sanitizer | Draft copy | Reject unsafe or unsupported claims. |
+| Sanitizer | Analyst | Sanitized copy plus risk notes | Score quality and explain revision needs. |
+| Analyst | Designer | Approved copy and quality notes | Designer must not invent copy. |
+| Designer | WebDev | Visual/layout brief | WebDev must use approved copy only. |
+| WebDev | QA Auditor | Website-change proposal | Proposal must be reviewable. |
+| QA Auditor | Human | Final report | Challenge claims before approval. |
 
-## Revision loop
+## Current Revision Reality
 
-```text
-Copywriter
-↓
-Sanitizer
-↓
-Analyst
-├── approve → Designer
-└── revise  → Copywriter or Strategist
-```
+The public runner records sanitizer and analyst feedback, but it does not yet enforce a robust automatic revision loop. Treat revision-loop enforcement as roadmap work until tests and deterministic control flow are added.
 
-The system should prefer a conservative revision loop over silently promoting weak output.
+## Future Visual Handoff
 
-## Future visual handoff
-
-A future UI can represent each agent as a stage in a board:
+A future UI could represent each role as a board stage:
 
 ```text
-Backlog → Brief → Diagnosis → Strategy → Copy → Safety → QA → Web Proposal → Human Review → Approved
+Backlog -> Brief -> Diagnosis -> Strategy -> Copy -> Safety -> QA -> Web Proposal -> Human Review -> Approved
 ```
 
-Useful UI features:
+Useful UI features would include:
 
-- card per request;
-- visible current owner;
-- status by agent;
+- one card per request;
+- visible current stage;
 - revision count;
-- confidence score;
 - QA blockers;
 - artifact links;
 - human approval button;
